@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/png" href="favicon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Truth</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <div class="logo-icon" style="font-weight: bold; color: var(--accent-primary);">&#9889;</div>
+                <h1>Truth</h1>
+            </div>
+            <div class="header-controls">
+                <div class="date-display">
+                    <div class="date" id="currentDate"></div>
+                </div>
+                <div class="streak">
+                    <span style="font-weight: bold; color: var(--accent-warm);">&#10004;</span>
+                    <span id="streakCount">0</span> day streak
+                </div>
+                <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">&#9790;</button>
+            </div>
+        </header>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab active" data-tab="dashboard">Dashboard</button>
+            <button class="tab" data-tab="tasks">Tasks</button>
+            <button class="tab" data-tab="projects">Projects</button>
+            <button class="tab" data-tab="timer">Timer</button>
+            <button class="tab" data-tab="calendar">Calendar</button>
+            <button class="tab" data-tab="report">Report</button>
+        </div>
+
+        <!-- Dashboard Content -->
+        <div id="dashboard" class="content active">
+            <div class="dashboard-grid">
+                <!-- Quote of the Day -->
+                <div class="card quote-card">
+                    <div class="quote-text" id="quoteText"></div>
+                    <div class="quote-author" id="quoteAuthor"></div>
+                </div>
+
+                <!-- Stats Overview -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Today's Progress</h2>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value" id="todayTasks">0</div>
+                            <div class="stat-label">Tasks Done</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="todayMissions">0</div>
+                            <div class="stat-label">Missions</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="focusTime">0m</div>
+                            <div class="stat-label">Focus Time</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Event Countdown -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Special Events</h2>
+                    <button class="btn-secondary" onclick="openEventModal()">+ Add Event</button>
+                </div>
+                <div id="eventsList">
+                    <div class="empty-state">
+                        <div class="empty-icon" style="font-size: 2rem; font-weight: bold;">&#9873;</div>
+                        <div class="empty-text">No events tracked</div>
+                        <div class="empty-subtext">Add important dates like exams or interviews</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Projects -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Active Projects</h2>
+                </div>
+                <div id="activeProjectsList">
+                    <div class="empty-state">
+                        <div class="empty-icon" style="font-size: 2rem; font-weight: bold;">&#9733;</div>
+                        <div class="empty-text">No active projects</div>
+                        <div class="empty-subtext">Create a 10-day project to get started</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tasks Content -->
+        <div id="tasks" class="content">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Today's Tasks</h2>
+                    <span id="taskCount" style="color: var(--text-secondary);">0 tasks</span>
+                </div>
+                
+                <div class="task-input-container">
+                    <input type="text" class="task-input" id="taskInput" placeholder="What needs to be done?">
+                    <div class="task-input-row">
+                        <input type="time" class="select-input" id="taskTime" style="width: 150px;">
+                        <select class="select-input" id="taskPriority" style="width: 150px;">
+                            <option value="low">Low Priority</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="high">High Priority</option>
+                        </select>
+                        <button class="btn btn-primary" onclick="addTask()">Add Task</button>
+                    </div>
+                </div>
+
+                <div id="taskList" class="task-list">
+                    <div class="empty-state">
+                        <div class="empty-icon" style="font-size: 2rem; font-weight: bold;">&#9998;</div>
+                        <div class="empty-text">No tasks yet</div>
+                        <div class="empty-subtext">Add your first task to get started!</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Completed Today</h2>
+                    <span id="completedCount" style="color: var(--accent-success);">0 tasks</span>
+                </div>
+                
+                <div id="completedList" class="task-list">
+                    <div class="empty-state">
+                        <div class="empty-icon" style="font-size: 2rem; font-weight: bold;">&#10004;</div>
+                        <div class="empty-text">Nothing completed yet</div>
+                        <div class="empty-subtext">Complete tasks to see them here</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Projects Content -->
+        <div id="projects" class="content">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">10-Day Projects</h2>
+                    <button class="btn btn-primary" onclick="openProjectModal()">+ New Project</button>
+                </div>
+                
+                <div id="projectsList" class="project-list">
+                    <div class="empty-state">
+                        <div class="empty-icon" style="font-size: 2rem; font-weight: bold;">&#9733;</div>
+                        <div class="empty-text">No projects yet</div>
+                        <div class="empty-subtext">Create your first 10-day project</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Timer Content -->
+        <div id="timer" class="content">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Focus Timer</h2>
+                    <button class="btn-secondary" onclick="openTimerSettings()">Settings</button>
+                </div>
+
+                <div class="timer-display">
+                    <div class="timer-circle">
+                        <svg width="200" height="200">
+                            <circle class="timer-circle-bg" cx="100" cy="100" r="90"></circle>
+                            <circle class="timer-circle-progress" cx="100" cy="100" r="90" 
+                                    stroke-dasharray="565" stroke-dashoffset="0" id="timerProgress"></circle>
+                        </svg>
+                        <div class="timer-text" id="timerDisplay">25:00</div>
+                    </div>
+                    <div class="timer-label" id="timerMode">Focus Time</div>
+                </div>
+
+                <div class="timer-controls">
+                    <button class="btn btn-primary" onclick="startTimer()" id="timerButton">Start</button>
+                    <button class="btn btn-secondary" onclick="resetTimer()">Reset</button>
+                </div>
+
+                <div class="stats-grid" style="margin-top: 2rem;">
+                    <div class="stat-card">
+                        <div class="stat-value" id="sessionsToday">0</div>
+                        <div class="stat-label">Sessions</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalFocusTime">0m</div>
+                        <div class="stat-label">Total Time</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Calendar Content -->
+        <div id="calendar" class="content">
+            <div class="card">
+                <div class="calendar">
+                    <div class="calendar-header">
+                        <h2 class="calendar-month" id="calendarMonth"></h2>
+                        <div class="calendar-nav">
+                            <button onclick="changeMonth(-1)">←</button>
+                            <button onclick="changeMonth(1)">→</button>
+                        </div>
+                    </div>
+                    <div class="calendar-grid" id="calendarGrid"></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Legend</h2>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 0.75rem; font-size: 0.875rem;">
+                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                        <div style="width: 8px; height: 8px; background: var(--accent-success); border-radius: 50%; box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);"></div>
+                        <span>At least one task completed (bottom dot)</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                        <div style="width: 8px; height: 8px; background: linear-gradient(135deg, var(--accent-warm), #fbbf24); border-radius: 50%; box-shadow: 0 0 8px rgba(245, 158, 11, 0.6);"></div>
+                        <span>At least one mission completed (top-right dot)</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                        <div style="padding: 0.5rem 0.75rem; background: var(--accent-primary); color: white; border-radius: 6px; font-weight: 600;">15</div>
+                        <span>Today's date</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Monthly Report Content -->
+        <div id="report" class="content">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Monthly Performance Report</h2>
+                    <button class="btn btn-primary" onclick="exportPerformanceReport()">Export Report</button>
+                </div>
+
+                <div class="stats-grid" style="margin-bottom: 2rem;">
+                    <div class="stat-card">
+                        <div class="stat-value" id="monthTotalTasks">0</div>
+                        <div class="stat-label">Tasks Completed</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="monthTotalMissions">0</div>
+                        <div class="stat-label">Missions Completed</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="monthTotalSessions">0</div>
+                        <div class="stat-label">Focus Sessions</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="monthActiveStreak">0</div>
+                        <div class="stat-label">Current Streak</div>
+                    </div>
+                </div>
+
+                <div class="card" style="background: var(--bg-tertiary); margin-top: 1.5rem;">
+                    <h3 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 1rem;">Activity This Month</h3>
+                    <div id="monthActivityChart" style="display: grid; gap: 0.5rem;"></div>
+                </div>
+
+                <div class="card" style="background: var(--bg-tertiary); margin-top: 1.5rem;">
+                    <h3 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 1rem;">Project Summary</h3>
+                    <div id="monthProjectSummary"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Project Modal -->
+    <div id="projectModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="projectModalTitle">New Project</h3>
+                <button class="modal-close" onclick="closeProjectModal()">×</button>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Project Name</label>
+                <input type="text" class="form-input" id="projectName" placeholder="Enter project name">
+            </div>
+
+            <div id="missionsContainer"></div>
+
+            <button class="btn btn-primary" style="width: 100%;" onclick="saveProject()">Create Project</button>
+        </div>
+    </div>
+
+    <!-- Event Modal -->
+    <div id="eventModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Add Special Event</h3>
+                <button class="modal-close" onclick="closeEventModal()">×</button>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Event Name</label>
+                <input type="text" class="form-input" id="eventName" placeholder="e.g., Final Exam, Job Interview">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Event Date</label>
+                <input type="date" class="form-input" id="eventDate">
+            </div>
+
+            <button class="btn btn-primary" style="width: 100%;" onclick="saveEvent()">Add Event</button>
+        </div>
+    </div>
+
+    <!-- Timer Settings Modal -->
+    <div id="timerSettingsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Timer Settings</h3>
+                <button class="modal-close" onclick="closeTimerSettings()">×</button>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Focus Duration (minutes)</label>
+                <input type="number" class="form-input" id="focusDuration" value="25" min="1" max="60">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Break Duration (minutes)</label>
+                <input type="number" class="form-input" id="breakDuration" value="5" min="1" max="30">
+            </div>
+
+            <button class="btn btn-primary" style="width: 100%;" onclick="saveTimerSettings()">Save Settings</button>
+        </div>
+    </div>
+
+    <!-- Mission Details Modal -->
+    <div id="missionModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="missionModalTitle"></h3>
+                <button class="modal-close" onclick="closeMissionModal()">×</button>
+            </div>
+
+            <div id="missionsList" class="task-list"></div>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="notification">
+        <div class="notification-title" id="notificationTitle"></div>
+        <div class="notification-message" id="notificationMessage"></div>
+    </div>
+<script src="script.js"></script>
+</body>
+</html>
